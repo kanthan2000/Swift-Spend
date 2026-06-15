@@ -1,0 +1,46 @@
+export const Colors = {
+  background: '#FDF8FA',
+  backgroundAlt: '#FBF9FF',
+  white: '#FFFFFF',
+  primary: '#007AFF',
+  primaryDark: '#0056D2',
+  text: '#1A1A1A',
+  textSecondary: '#6B7280',
+  textMuted: '#9CA3AF',
+  textLight: '#C4C4C4',
+  border: '#E5E7EB',
+  borderLight: '#F0F0F0',
+  income: '#107C41',
+  incomeLight: '#DCFCE7',
+  expense: '#EF4444',
+  expenseLight: '#FEE2E2',
+  cardBlue: '#F0F5FF',
+  cardBlueText: '#1E40AF',
+  cardGreen: '#F0FDF4',
+  cardGreenText: '#166534',
+  cardPurple: '#EDE9FE',
+  cardPurpleText: '#4338CA',
+  progressTrack: '#E5E7EB',
+  shadow: 'rgba(0, 0, 0, 0.06)',
+  chartBlue: '#007AFF',
+  chartGreen: '#22C55E',
+  chartRed: '#EF4444',
+  chartGray: '#D1D5DB',
+  tipBlue: '#007AFF',
+};
+
+export const Spacing = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+};
+
+export const Radius = {
+  sm: 12,
+  md: 16,
+  lg: 20,
+  xl: 24,
+  pill: 999,
+};
