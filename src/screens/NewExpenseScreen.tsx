@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -75,6 +76,18 @@ export default function NewExpenseScreen({ visible, onClose, defaultType = 'DEBI
   const handleSave = async () => {
     const value = parseFloat(amount);
     if (!value || value <= 0) return;
+
+    if (defaultType === 'DEBIT') {
+      const selectedAccount = accounts.find(a => a.name === accountName);
+      const currentBalance = selectedAccount ? selectedAccount.balance : 0;
+      if (value > currentBalance) {
+        Alert.alert(
+          'Insufficient Balance',
+          `Your expense amount (${value.toLocaleString(undefined, { minimumFractionDigits: 2 })}) exceeds the current balance of ${accountName} (${currentBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}).`
+        );
+        return;
+      }
+    }
 
     const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
     await addTransaction({

@@ -64,7 +64,7 @@ function getTransactionIcon(txn: Transaction) {
 }
 
 export default function DashboardScreen({ onAddExpense }: Props) {
-  const { dashboardSummary, transactions } = useStore();
+  const { dashboardSummary, transactions, accounts, currentAccount, setCurrentAccount } = useStore();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalType, setModalType] = React.useState<'DEBIT' | 'CREDIT' | null>(null);
 
@@ -104,6 +104,61 @@ export default function DashboardScreen({ onAddExpense }: Props) {
             <Icon name="bell-outline" size={24} color={Colors.text} />
           </TouchableOpacity>
         </View>
+
+        {/* Account Selector */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.accountSelectorScroll}
+          contentContainerStyle={styles.accountSelectorContent}
+        >
+          <TouchableOpacity
+            style={[
+              styles.accountChip,
+              currentAccount === 'All' && styles.accountChipActive,
+            ]}
+            onPress={() => setCurrentAccount('All')}
+          >
+            <Icon
+              name="apps"
+              size={16}
+              color={currentAccount === 'All' ? Colors.white : Colors.textSecondary}
+            />
+            <Text
+              style={[
+                styles.accountChipText,
+                currentAccount === 'All' && styles.accountChipTextActive,
+              ]}
+            >
+              All
+            </Text>
+          </TouchableOpacity>
+
+          {accounts.map((acc) => (
+            <TouchableOpacity
+              key={acc.name}
+              style={[
+                styles.accountChip,
+                currentAccount === acc.name && styles.accountChipActive,
+              ]}
+              onPress={() => setCurrentAccount(acc.name)}
+            >
+              <Icon
+                name="bank"
+                size={16}
+                color={currentAccount === acc.name ? Colors.white : Colors.textSecondary}
+              />
+              <Text
+                style={[
+                  styles.accountChipText,
+                  currentAccount === acc.name && styles.accountChipTextActive,
+                ]}
+              >
+                {acc.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
 
         <Text style={styles.balanceLabel}>TOTAL BALANCE</Text>
         <Text style={styles.balanceAmount}>
@@ -358,5 +413,35 @@ const styles = StyleSheet.create({
   fabIncome: {
     backgroundColor: Colors.primary,
     shadowColor: Colors.primary,
+  },
+  accountSelectorScroll: {
+    marginBottom: Spacing.md,
+  },
+  accountSelectorContent: {
+    gap: 8,
+    paddingRight: Spacing.lg,
+  },
+  accountChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.pill,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    gap: 6,
+  },
+  accountChipActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
+  accountChipText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: Colors.textSecondary,
+  },
+  accountChipTextActive: {
+    color: Colors.white,
   },
 });

@@ -214,16 +214,26 @@ export const useStore = create<AppState>((set, get) => ({
       await dbService.saveSetting('userName', name);
       await dbService.saveSetting('isOnboarded', 'true');
 
-      // 2. Save account
-      await dbService.saveAccount(firstAccountName, openingBalance);
+      // 2. Save account with 0 opening balance (as we insert a CREDIT transaction for the opening balance)
+      await dbService.saveAccount(firstAccountName, 0);
 
-      // 3. (Removed) We no longer create a CREDIT transaction for the opening balance.
-      // The balance will be calculated as opening_balance + income - expense.
+      // 3. Create a CREDIT transaction for the opening balance
+      const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
+      await dbService.saveTransaction({
+        amount: openingBalance,
+        transaction_type: 'CREDIT',
+        merchant: 'Opening Balance',
+        category: 'Income',
+        source_app: 'Manual',
+        transaction_time: nowStr,
+        raw_notification: `Opening Balance for ${firstAccountName}`,
+        account_name: firstAccountName,
+      });
 
       set({
         userName: name,
         isOnboarded: true,
-        currentAccount: firstAccountName
+        currentAccount: 'All'
       });
       
       // Refresh database records
@@ -238,8 +248,22 @@ export const useStore = create<AppState>((set, get) => ({
   addAccount: async (name, openingBalance) => {
     set({ isLoading: true });
     try {
-      await dbService.saveAccount(name, openingBalance);
-      // Removed CREDIT transaction insertion for opening balance
+      // Save account with 0 opening balance (as we insert a CREDIT transaction for the opening balance)
+      await dbService.saveAccount(name, 0);
+      
+      // Create a CREDIT transaction for the opening balance
+      const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
+      await dbService.saveTransaction({
+        amount: openingBalance,
+        transaction_type: 'CREDIT',
+        merchant: 'Opening Balance',
+        category: 'Income',
+        source_app: 'Manual',
+        transaction_time: nowStr,
+        raw_notification: `Opening Balance for ${name}`,
+        account_name: name,
+      });
+
       await get().fetchData();
     } catch (e) {
       console.error('Error adding account:', e);
